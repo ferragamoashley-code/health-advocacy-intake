@@ -8,7 +8,7 @@ See the [wire diagram](docs/README.md) for the full workflow.
 
 | Protocol | Status | Details |
 |---|---|---|
-| AssemblyAI (transcription) | In progress | [tests/assemblyai](tests/assemblyai/README.md) |
+| AssemblyAI (transcription) | Complete (46 passed, 5 skipped) | [tests/assemblyai](tests/assemblyai/README.md) |
 | Pandera | Not started | |
 | Presidio | Not started | |
 | Vonage | Not tested (no license) | |

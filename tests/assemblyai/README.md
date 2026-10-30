@@ -4,19 +4,20 @@ Black-box unit tests for the AssemblyAI transcription step, one of the atomic pr
 
 ## Status
 
-**26 of 32 plan rows passing** (as of October 23, 2026).
+**46 passed, 5 skipped** (as of October 30, 2026).
 
-Passing: offline config check; all 10 English-call rows; 8 kHz telephony audio; .mp3 input; single speaker (natural voicemail); speaker floor; 20-second callback; silence fallback; 12-minute long call; too-short clip; Mandarin (revised expectation); invalid API key; empty bytes; non-audio bytes; `speakers_expected` combined with a speaker range; min speakers above max; unknown model.
+Passing: offline config check; all 10 English-call rows; 8 kHz telephony audio; .mp3 input; single speaker (natural voicemail); speaker floor; three speakers separated; maximum speaker cap merges extra speakers; 20-second callback; silence fallback; 12-minute long call; too-short clip; Mandarin (revised expectation); invalid API key; empty bytes; non-audio bytes; `speakers_expected` combined with a speaker range; min speakers above max; unknown model.
 
-Remaining:
+Skipped:
 
-| Test(s) | Fixture needed | What the recording must contain |
-|---|---|---|
-| `test_three_speakers_separated`, `test_max_cap_merges_extra_speakers` | `intake_en_3spk_16k.wav` | Three people; the caregiver says "this is Sam" |
-| `test_spanish_call` | `intake_es_2spk_16k.wav` | Two Spanish speakers; at least 4 of the 5 Spanish key terms |
-| `test_mixed_english_spanish_both_kept` | `intake_en_es_mixed_16k.wav` | Both "appeal" and "apelación" |
-| `test_accented_english_not_translated` | `intake_en_accented_16k.wav` | English spoken with a strong non-native accent |
-| `long_call_60min` (manual only) | — | See "Running the tests" |
+| Test(s) | Skipped tests | Fixture needed | Reason |
+|---|---|---|---|
+| `test_spanish_call` | 1 | `intake_es_2spk_16k.wav` (two Spanish speakers; at least 4 of the 5 Spanish key terms) | Out of scope: the wrapper is English-only for now |
+| `test_mixed_english_spanish_both_kept` | 2 | `intake_en_es_mixed_16k.wav` (both "appeal" and "apelación") | Out of scope: the wrapper is English-only for now |
+| `test_accented_english_not_translated` | 1 | `intake_en_accented_16k.wav` (English with a strong non-native accent) | In scope; fixture not yet recorded |
+| `long_call_60min` | 1 | — | Manual only; see "Running the tests" |
+
+The first three use `pytest.mark.skipif` on the fixture file, so each test runs automatically once its recording is added to `fixtures/`.
 
 ## Configuration
 
@@ -43,6 +44,7 @@ afconvert -f WAVE -d LEI16@16000 -c 1 input.m4a output.wav
 | `intake_en_2spk_16k.wav` | English two-speaker intake call (main English rows) |
 | `intake_en_2spk_8k.wav` | 8 kHz telephony audio |
 | `intake_en_2spk.mp3` | .mp3 input |
+| `intake_en_3spk_16k.wav` | Three speakers (advocate, client, caregiver "Sam") |
 | `voicemail_en_1spk_16k.wav` | Single speaker (natural voicemail) |
 | `callback_en_20s_16k.wav` | 20-second callback |
 | `intake_zh_2spk_16k.wav` | Mandarin, a language outside `expected_languages` |
@@ -61,7 +63,7 @@ export ASSEMBLYAI_API_KEY="your-key-here"
 python -m pytest tests/assemblyai --timeout=720
 ```
 
-To run selected tests, add `-k "<test names>"`.
+To run selected tests, add `-k "<test names>"`. To see why tests were skipped, add `-rs`.
 
 The 60-minute long-call test runs only when requested:
 
