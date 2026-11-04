@@ -1,0 +1,65 @@
+{
+  "text": "Thanks for calling Community Health Advocates. This is Jordan Pike. Can I get your name? Dana Whitlock. And your date of birth? March 3rd, 1961. What's the best number to reach you? 555-555-0142. And your zip code? 11201. Do you have your Medicaid ID handy? Yes, it's AB12345C. What's going on with your plan? They denied my power wheelchair. The letter says I have to appeal by November 16th. It came in Spanish and I asked for English. Got it. And roughly, what's your household income? About $54,000 a year. Thank you very much.",
+  "utterances": [
+    {
+      "speaker": "A",
+      "text": "Thanks for calling Community Health Advocates. This is Jordan Pike. Can I get your name?"
+    },
+    {
+      "speaker": "B",
+      "text": "Dana Whitlock."
+    },
+    {
+      "speaker": "A",
+      "text": "And your date of birth?"
+    },
+    {
+      "speaker": "B",
+      "text": "March 3rd,"
+    },
+    {
+      "speaker": "A",
+      "text": "1961. What's the best number to reach you?"
+    },
+    {
+      "speaker": "B",
+      "text": "555-555-0142."
+    },
+    {
+      "speaker": "A",
+      "text": "And your zip code?"
+    },
+    {
+      "speaker": "B",
+      "text": "11201."
+    },
+    {
+      "speaker": "A",
+      "text": "Do you have your Medicaid ID handy?"
+    },
+    {
+      "speaker": "B",
+      "text": "Yes, it's AB12345C."
+    },
+    {
+      "speaker": "A",
+      "text": "What's going on with your plan?"
+    },
+    {
+      "speaker": "B",
+      "text": "They denied my power wheelchair. The letter says I have to appeal by November 16th. It came in Spanish and I asked for English."
+    },
+    {
+      "speaker": "A",
+      "text": "Got it. And roughly, what's your household income?"
+    },
+    {
+      "speaker": "B",
+      "text": "About $54,000 a year."
+    },
+    {
+      "speaker": "A",
+      "text": "Thank you very much."
+    }
+  ]
+}

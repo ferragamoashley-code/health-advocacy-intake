@@ -1,0 +1,15 @@
+Speaker A: Thanks for calling Community Health Advocates. This is Jordan Pike. Can I get your name?
+Speaker B: Dana Whitlock.
+Speaker A: And your date of birth?
+Speaker B: March 3rd,
+Speaker A: 1961. What's the best number to reach you?
+Speaker B: 555-555-0142.
+Speaker A: And your zip code?
+Speaker B: 11201.
+Speaker A: Do you have your Medicaid ID handy?
+Speaker B: Yes, it's AB12345C.
+Speaker A: What's going on with your plan?
+Speaker B: They denied my power wheelchair. The letter says I have to appeal by November 16th. It came in Spanish and I asked for English.
+Speaker A: Got it. And roughly, what's your household income?
+Speaker B: About $54,000 a year.
+Speaker A: Thank you very much.
