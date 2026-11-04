@@ -12,7 +12,7 @@ Black-box tests of this protocol would have to place and record real calls throu
 
 ## How the gap is covered
 
-- **Downstream input is tested directly.** The AssemblyAI tests (`tests/assemblyai`) use synthetic recordings made with Voice Memos in place of Vonage recordings, including an 8 kHz telephony-quality file and a stereo file downmixed to mono, so node 2 is tested against the kinds of audio a phone recording is likely to produce.
+- **Downstream input is tested directly.** The AssemblyAI tests (`tests/assemblyai`) use synthetic recordings made with Voice Memos in place of Vonage recordings, including an 8 kHz telephony-quality file and an .mp3, so node 2 is tested against the kinds of audio a phone recording is likely to produce.
 - **The handoff is a file.** Node 2 only needs an audio file. Any recording Vonage produces can be checked against the formats the AssemblyAI tests already cover.
 
 ## What testing would need
