@@ -65,8 +65,14 @@ def _describe(name, spec):
     elif spec["type"] in ("number", "integer"):
         parts.append("number")
     if name == "care_gap":
-        parts.append('"yes" if the client is currently going without needed '
-                     "care, medication or services")
+        parts.append('"yes" only if the client is at immediate risk because '
+                     "they are without care they currently depend on: out of, "
+                     "or about to run out of, a medication; a treatment, home "
+                     "care hours or a procedure cut, cancelled or missed; or "
+                     "no access to a provider they are being treated by. A "
+                     "new item or service that is still being requested, "
+                     "reviewed or appealed (for example, equipment not yet "
+                     'approved) is "no" unless one of those also applies')
     return "; ".join(parts)
 
 
