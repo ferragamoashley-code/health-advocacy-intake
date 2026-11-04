@@ -1,0 +1,20 @@
+{
+  "call_date": "2026-11-02",
+  "case_categories": "eligibility",
+  "client_name": "Dana Whitlock",
+  "contact_number": "5555550142",
+  "email": null,
+  "zip_code": "11201",
+  "race": "More than one race",
+  "ethnicity": "Hispanic or Latino",
+  "language_at_home": "English",
+  "plan_name": "None",
+  "plan_type": "Uninsured",
+  "care_gap": "unknown",
+  "narrative": "Lost Medicaid coverage at renewal; unsure whether renewal packet was received.",
+  "eligibility_category": "MAGI",
+  "household_size": 2,
+  "household_income": 28000,
+  "immigration_status": "Lawful permanent resident",
+  "nys_resident": "yes"
+}

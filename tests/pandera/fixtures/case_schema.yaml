@@ -60,7 +60,7 @@ core:
       - Essential Plan
       - Child Health Plus
       - Uninsured
-  care_gap:           {type: choice, allowed: [yes, no, unknown], required: true}
+  care_gap:           {type: choice, allowed: ['yes', 'no', 'unknown'], required: true}
   narrative:          {type: text, required: false}
 
 categories:
@@ -93,8 +93,8 @@ categories:
     bill_amount:            {type: number, required: false}
     provider_name:          {type: text, required: true}
     network_status:         {type: choice, allowed: [INN, OON, unknown], required: true}
-    client_contacted_provider: {type: choice, allowed: [yes, no], required: true}
-    provider_appealed:      {type: choice, allowed: [yes, no, unknown], required: true}
+    client_contacted_provider: {type: choice, allowed: ['yes', 'no'], required: true}
+    provider_appealed:      {type: choice, allowed: ['yes', 'no', 'unknown'], required: true}
 
   eligibility:
     eligibility_category:   {type: choice, allowed: [MAGI, non-MAGI], required: true}
@@ -111,7 +111,7 @@ categories:
         - Undocumented
         - Unknown
         - Declined
-    nys_resident:           {type: choice, allowed: [yes, no], required: true}
+    nys_resident:           {type: choice, allowed: ['yes', 'no'], required: true}
 
 urgency:
   - name: appeal_deadline_within_14_days
@@ -122,4 +122,4 @@ urgency:
   - name: care_gap
     applies_to: all
     # Check passes when care_gap is not "yes". Failure = urgent.
-    passes_when: care_gap != yes
+    passes_when: care_gap != 'yes'
