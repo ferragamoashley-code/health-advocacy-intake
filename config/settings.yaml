@@ -1,0 +1,17 @@
+# Settings for the intake prototype.
+
+llm:
+  model: claude-sonnet-5-5     # swap for claude-haiku-5-5 to compare
+  max_tokens: 4096
+
+assemblyai:
+  speech_models: [universal-3-5-pro, universal-2]
+  speaker_labels: true
+  language_detection: true
+  expected_languages: [en, es]
+  fallback_language: en
+  # English-only scope: a call counts as English only if language_code
+  # starts with "en" and language_confidence is at least this value.
+  min_english_confidence: 0.5
+
+outputs_dir: outputs            # git-ignored

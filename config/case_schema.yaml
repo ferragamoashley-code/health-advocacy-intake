@@ -1,0 +1,125 @@
+# Case schema for node 6 (Pandera validation)
+# Scope: three case categories (billing, appeal, eligibility).
+# A case can have more than one category. Validation uses the core fields
+# plus the combined fields of every assigned category. If a field appears in
+# more than one assigned category, it is required if ANY of them requires it.
+#
+# Field types:
+#   text     - non-empty text (empty string "" counts as missing)
+#   date     - calendar date, YYYY-MM-DD
+#   number   - number >= 0
+#   integer  - whole number >= 1
+#   choice   - must be one of the listed values
+#   pattern  - text matching a regular expression
+#
+# Missing required fields -> reported as missing-information flags.
+# Urgency rules -> written so that a FAILED check means URGENT.
+
+version: 1
+
+categories_field:
+  name: case_categories
+  # Stored as semicolon-separated text, e.g. "appeal;billing"
+  allowed: [billing, appeal, eligibility]
+  min_count: 1
+
+core:
+  call_date:          {type: date, required: true}
+  client_name:        {type: text, required: true}
+  contact_number:     {type: pattern, regex: '^\d{10}$', required: true}
+  email:              {type: pattern, regex: '^[^@\s]+@[^@\s]+\.[^@\s]+$', required: false}
+  zip_code:           {type: pattern, regex: '^\d{5}$', required: true}
+  race:
+    type: choice
+    required: true
+    allowed:
+      - American Indian or Alaska Native
+      - Asian
+      - Black or African American
+      - Native Hawaiian or Other Pacific Islander
+      - White
+      - More than one race
+      - Other
+      - Declined
+  ethnicity:
+    type: choice
+    required: true
+    allowed: [Hispanic or Latino, Not Hispanic or Latino, Declined]
+  language_at_home:   {type: text, required: true}
+  plan_name:          {type: text, required: true}
+  plan_type:
+    type: choice
+    required: true
+    allowed:
+      - Medicaid
+      - Medicaid managed care
+      - Medicare
+      - D-SNP
+      - ESI
+      - Marketplace
+      - Essential Plan
+      - Child Health Plus
+      - Uninsured
+  care_gap:           {type: choice, allowed: ['yes', 'no', 'unknown'], required: true}
+  narrative:          {type: text, required: false}
+
+categories:
+  billing:
+    date_of_service:        {type: date, required: true}
+    insurance_during_dos:   {type: text, required: true}
+    third_party_admin:      {type: text, required: false}
+    bill_amount:            {type: number, required: true}
+    provider_name:          {type: text, required: true}
+    network_status:         {type: choice, allowed: [INN, OON, unknown], required: true}
+    service_location:       {type: choice, allowed: [NYS, out of state], required: true}
+    household_income:       {type: number, required: true}
+    household_size:         {type: integer, required: true}
+
+  appeal:
+    denial_type:
+      type: choice
+      required: true
+      allowed: [EOB, IAD, FAD, grievance or complaint resolution notice]
+    denial_reason:
+      type: choice
+      required: true
+      allowed: [not a covered benefit, not medically necessary, other]
+    appeal_level:           {type: choice, allowed: [1st level, 2nd level, external], required: true}
+    appeal_due_date:        {type: date, required: true}
+    funding_type:           {type: choice, allowed: [fully insured, self-insured, unknown], required: false}
+    service_or_medication:  {type: text, required: true}
+    service_timing:         {type: choice, allowed: [pre-service, post-service, concurrent], required: true}
+    date_of_service:        {type: date, required: false}
+    bill_amount:            {type: number, required: false}
+    provider_name:          {type: text, required: true}
+    network_status:         {type: choice, allowed: [INN, OON, unknown], required: true}
+    client_contacted_provider: {type: choice, allowed: ['yes', 'no'], required: true}
+    provider_appealed:      {type: choice, allowed: ['yes', 'no', 'unknown'], required: true}
+
+  eligibility:
+    eligibility_category:   {type: choice, allowed: [MAGI, non-MAGI], required: true}
+    household_size:         {type: integer, required: true}
+    household_income:       {type: number, required: true}
+    immigration_status:
+      type: choice
+      required: true
+      allowed:
+        - U.S. citizen
+        - Lawful permanent resident
+        - Other lawfully present
+        - PRUCOL
+        - Undocumented
+        - Unknown
+        - Declined
+    nys_resident:           {type: choice, allowed: ['yes', 'no'], required: true}
+
+urgency:
+  - name: appeal_deadline_within_14_days
+    applies_to: appeal
+    # Check passes when the deadline is MORE than 14 days after the call.
+    # Failure = urgent (14 days or fewer).
+    passes_when: appeal_due_date - call_date > 14 days
+  - name: care_gap
+    applies_to: all
+    # Check passes when care_gap is not "yes". Failure = urgent.
+    passes_when: care_gap != 'yes'
