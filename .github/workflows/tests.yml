@@ -1,0 +1,51 @@
+# Unit tests for the atomic protocols.
+#   - Pandera and Presidio: free and offline, run on every push and pull request.
+#   - AssemblyAI: uses API credit, runs weekly (Mondays) and on demand.
+# All jobs can be started by hand from the Actions tab ("Run workflow").
+
+name: Protocol unit tests
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+  schedule:
+    # GitHub schedules in UTC. 13:17 UTC = 6:17 a.m. MST (Nov–Mar)
+    # and 7:17 a.m. MDT (Mar–Nov).
+    - cron: "17 13 * * 1"
+
+jobs:
+  offline:
+    name: Pandera and Presidio
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+      - name: Run tests
+        run: python -m pytest tests/pandera tests/presidio -v
+
+  assemblyai:
+    name: AssemblyAI
+    # Weekly schedule and manual runs only, never on push.
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      ASSEMBLYAI_API_KEY: ${{ secrets.ASSEMBLYAI_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+      - name: Run tests
+        # The 60-minute long-call test stays manual-only (RUN_MANUAL is not set).
+        run: python -m pytest tests/assemblyai -v --timeout=720
