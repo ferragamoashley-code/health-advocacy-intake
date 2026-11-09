@@ -1,6 +1,6 @@
 # Presidio — unit tests (node 9: de-identify the review log)
 
-**Status:** Complete — 31 passed, 0 skipped (Nov 4, 2026)
+**Status:** Complete — 32 passed, 0 skipped (Nov 4, 2026)
 
 ## Protocol
 
@@ -44,6 +44,7 @@ All other test inputs are short sentences in the test file. No real client data.
 |---|---|---|---|---|
 | 1 | Typical | Full transcript fixture | Names, DOB, phone, CIN labeled; zip → 112\*\*; deadline, "Spanish", "$54,000" kept | ✅ |
 | 2 | Typical | Sentence with a full name | \<PERSON\> | ✅ |
+| 2b | Typical | Sentence with two full names | Two \<PERSON\> labels | ✅ |
 | 3 | Typical | 555-555-0142, (555) 555-0142 | \<PHONE_NUMBER\> | ✅ |
 | 4 | Typical | Email address | \<EMAIL_ADDRESS\> | ✅ |
 | 5 | Typical | Fictional SSN | \<US_SSN\> | ✅ |
