@@ -203,6 +203,12 @@ def test_narrative_field_name_and_cin(deid):
     assert "not medically necessary" in out
 
 
+# Row 2b
+def test_two_names_replaced(deid):
+    out = deid("Jordan Pike transferred Dana Whitlock to a case handler.")
+    assert out.count("<PERSON>") == 3   # wrong on purpose: there are two names
+
+
 # Row 7
 def test_no_identifiers_unchanged(deid):
     text = "The plan denied the request as not a covered benefit."
