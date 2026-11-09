@@ -12,7 +12,7 @@ See the [wire diagram](docs/README.md) for the full workflow.
 |---|---|---|
 | AssemblyAI (transcription) | Complete (46 passed, 5 skipped) | [tests/assemblyai](tests/assemblyai/README.md) |
 | Pandera (schema validation) | Complete (26 passed) | [tests/pandera](tests/pandera/README.md) |
-   | Presidio (de-identification) | Complete (31 passed) | [tests/presidio](tests/presidio/README.md) |
+   | Presidio (de-identification) | Complete (32 passed) | [tests/presidio](tests/presidio/README.md) |
 | Vonage (call recording) | Not tested (no license) | [tests/vonage](tests/vonage/README.md) |
 
 ## Prototype

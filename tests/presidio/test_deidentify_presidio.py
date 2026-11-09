@@ -206,7 +206,7 @@ def test_narrative_field_name_and_cin(deid):
 # Row 2b
 def test_two_names_replaced(deid):
     out = deid("Jordan Pike transferred Dana Whitlock to a case handler.")
-    assert out.count("<PERSON>") == 3   # wrong on purpose: there are two names
+    assert out.count("<PERSON>") == 2   
 
 
 # Row 7
@@ -327,3 +327,4 @@ def test_long_call_within_budget(deid, transcript):
     elapsed = time.perf_counter() - start
     assert "Dana Whitlock" not in out
     assert elapsed < 120, f"took {elapsed:.1f} s"
+
