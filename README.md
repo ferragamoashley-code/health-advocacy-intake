@@ -1,5 +1,7 @@
 # Health Advocacy Intake
 
+[![tests](https://github.com/ferragamoashley-code/health-advocacy-intake-repo/actions/workflows/tests.yml/badge.svg)](https://github.com/ferragamoashley-code/health-advocacy-intake-repo/actions/workflows/tests.yml)
+
 Black-box unit tests for the atomic protocols in an AI-assisted intake workflow for health advocacy nonprofits.
 
 See the [wire diagram](docs/README.md) for the full workflow.

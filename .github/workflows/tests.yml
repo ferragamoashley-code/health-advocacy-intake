@@ -14,6 +14,9 @@ on:
     # and 7:17 a.m. MDT (Mar–Nov).
     - cron: "17 13 * * 1"
 
+permissions:
+  contents: read
+
 jobs:
   offline:
     name: Pandera and Presidio
