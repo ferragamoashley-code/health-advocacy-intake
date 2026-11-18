@@ -4,7 +4,71 @@
 
 Black-box unit tests for the atomic protocols in an AI-assisted intake workflow for health advocacy nonprofits.
 
-See the [wire diagram](docs/README.md) for the full workflow.
+See the [wire diagram](#wire-diagram) for the full workflow.
+
+## Wire diagram
+
+The full intake workflow, from the incoming call to the reviewed case note and the de-identified audit log. Numbers match the node numbers in the code (`intake/` and `app.py`).
+
+- **Atomic protocol** (dark): an externally maintained tool, covered by the black-box unit tests in `tests/` (Record call is not tested; see `tests/vonage/README.md`).
+- **Disposable component** (light): code written for this workflow that can be regenerated.
+- **Cylinders**: organization-specific config. Editing `config/` adapts the workflow to another organization.
+- **Dotted arrows**: config inputs (from a cylinder), or data the app keeps in memory and carries forward to review.
+
+```mermaid
+flowchart TD
+    %% Inputs and config
+    CALL(["Phone call · client consents → recording begins<br/><i>consent checkbox: planned</i>"])
+    SCHEMA[("config/case_schema.yaml<br/>core fields · categories · fields per category · urgency rules")]
+    TEMPLATE[("config/note_template.md")]
+    SETTINGS[("config/settings.yaml<br/>Claude model for nodes 3, 4, 5 and 8 ·<br/>AssemblyAI options for node 2 · outputs folder")]
+
+    N1["<b>ATOMIC PROTOCOL</b><br/><b>1 · Record call</b><br/><i>Deployment only.</i> Vonage Contact Center records the call<br/><i>Prototype: recording uploaded in the app</i>"]
+    N2["<b>ATOMIC PROTOCOL</b><br/><b>2 · Transcribe call</b><br/>AssemblyAI speech-to-text with speaker labels<br/>and an English-only check · transcribe.py"]
+    STOP(["Not English → stop:<br/>volunteer handles the intake manually"])
+    N3["<b>DISPOSABLE COMPONENT</b><br/><b>3 · Extract core facts</b><br/>Claude fills every core field, including care gap,<br/>with value, source quote and status, plus a narrative · extract.py"]
+    N4["<b>DISPOSABLE COMPONENT</b><br/><b>4 · Categorize case</b><br/>Claude assigns one or more categories<br/>(billing, appeal, eligibility) with rationale and quote · extract.py"]
+    N5["<b>DISPOSABLE COMPONENT</b><br/><b>5 · Extract category-specific facts</b><br/>Claude fills the fields the assigned categories need,<br/>with value, source quote and status · extract.py"]
+    N6["<b>ATOMIC PROTOCOL</b><br/><b>6 · Validate record</b><br/>Pandera checks the one-row case record against the schema:<br/>required fields present · values in valid format ·<br/>urgency rules: appeal due ≤ 14 days after the call; care gap = yes<br/>validate.py (record built by frame.py)"]
+    N7["<b>DISPOSABLE COMPONENT</b><br/><b>7 · Volunteer review</b><br/>Streamlit form shows each fact with its source quote;<br/>volunteer edits, fills or rejects facts, edits the narrative,<br/>changes categories and approves or denies urgency flags · app.py"]
+    N8["<b>DISPOSABLE COMPONENT</b><br/><b>8 · Draft case note</b><br/>Code fills client and plan, case type, key facts, missing information<br/>and urgency; Claude writes only the issue summary and next steps;<br/>volunteer edits the draft and saves · draft_note.py"]
+    N9["<b>ATOMIC PROTOCOL</b><br/><b>9 · De-identify</b><br/>Drops name, phone and email; zip → 3 digits;<br/>Microsoft Presidio redacts the transcript, narratives, quotes and case note · deidentify.py"]
+    NOTE(["outputs/&lt;case_id&gt;/case_note.md<br/>→ staff review and case decision"])
+    AUDIT(["outputs/&lt;case_id&gt;/audit_log.json<br/>de-identified, for evaluation"])
+
+    CALL --> N1
+    N1 -->|"call recording (.wav / .mp3)"| N2
+    SETTINGS -.->|"AssemblyAI options"| N2
+    N2 -->|"not detected as English (or confidence < 0.5)"| STOP
+    N2 -->|"transcript (text + utterances)"| N3
+    SCHEMA -.->|"core fields"| N3
+    N3 -->|"transcript + core facts (dict)"| N4
+    SCHEMA -.->|"allowed categories"| N4
+    N4 -->|"transcript + call date + categories (list[str])"| N5
+    SCHEMA -.->|"fields per category"| N5
+    N5 -->|"core + category facts + categories → one-row DataFrame (frame.py)"| N6
+    SCHEMA -.->|"required fields, formats, urgency rules"| N6
+    N6 -->|"missing (list[str]) · invalid (list[str]) · urgent (list[str])"| N7
+    N3 -.->|"carried forward: core facts + narrative"| N7
+    N4 -.->|"carried forward: categories + rationale + quote"| N7
+    N5 -.->|"carried forward: category facts"| N7
+    N7 -->|"each edit → re-validate: current facts + categories (one-row DataFrame)"| N6
+    N7 -->|"category change → re-extract: categories (list[str])"| N5
+    N7 -->|"approve: verified facts + narrative + categories + missing + approved urgency"| N8
+    TEMPLATE -.->|"note template (str)"| N8
+    N8 -->|"case note (markdown)"| NOTE
+    N8 -->|"review log (dict): AI vs. final facts, categories and narrative, validation, urgency decisions, case note"| N9
+    N9 -->|"redacted log (JSON)"| AUDIT
+
+    classDef atomic fill:#1f3864,stroke:#1f3864,color:#ffffff
+    classDef disposable fill:#dbe8f8,stroke:#3d6fc4,color:#1a1a1a
+    classDef io fill:#ffffff,stroke:#888888,color:#333333
+    classDef config fill:#f4f4f4,stroke:#888888,color:#333333
+    class N1,N2,N6,N9 atomic
+    class N3,N4,N5,N7,N8 disposable
+    class CALL,STOP,NOTE,AUDIT io
+    class SCHEMA,TEMPLATE,SETTINGS config
+```
 
 ## Protocols
 
